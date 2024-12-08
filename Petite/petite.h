@@ -107,7 +107,16 @@ __asm(".global __ARM_use_no_argv\n\t");
 #define LOG_PETITE_TAG "PETITE"
 #define LogPetite(l,args...) petite_log(l, LOG_PETITE_TAG, NULL,__FUNCTION__, __LINE__, ##args);
 
-
+/**
+ * @brief   添加一个函数到petitetask中轮询
+ * 
+ * @param   name        名称
+ * @param   cb          回调函数指针，int function(void *userdata)
+ * @param   periodic    轮询周期 ms
+ * @return  int 
+ * 
+ * @note 实际是添加一个软定时器
+ */
 int petite_add_loop(char *name, void *cb, uint32_t periodic);
 
 #endif

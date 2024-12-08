@@ -7,7 +7,7 @@
 #include "petite_def.h"
 #include "cmsis_os.h"
 #include "board_sysconf.h"
-#include "components/softtimer/softtimer.h"
+#include "frame/softtimer/softtimer.h"
 
 const char *CompilerType[]={
 	"unkown",
@@ -35,7 +35,16 @@ const char *CompilerType[]={
 
 void *PetiteSlstLoop = NULL;
 
-
+/**
+ * @brief   添加一个函数到petitetask中轮询
+ * 
+ * @param   name        名称
+ * @param   cb          回调函数指针，int function(void *userdata)
+ * @param   periodic    轮询周期 ms
+ * @return  int 
+ * 
+ * @note 实际是添加一个软定时器
+ */
 int petite_add_loop(char *name, void *cb, uint32_t periodic)
 {
 	void *looptimer = slst_create(name, cb);

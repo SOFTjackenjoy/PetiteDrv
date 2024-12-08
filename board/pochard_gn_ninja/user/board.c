@@ -19,7 +19,7 @@
 
 #include "panel/soundplay.h"
 
-#include "components/softtimer/softtimer.h"
+#include "frame/softtimer/softtimer.h"
 
 #include "gb2312.h"
 #include "gb18030.h"

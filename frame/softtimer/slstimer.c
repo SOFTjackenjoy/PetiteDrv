@@ -1,6 +1,6 @@
 /**
  * @file    slstimer.c
- * @brief   有序双向链表软定时器
+ * @brief   有序-双向链表-软定时器
  * 
  * @author  pochard(email@xxx.com)
  * @version 0.1

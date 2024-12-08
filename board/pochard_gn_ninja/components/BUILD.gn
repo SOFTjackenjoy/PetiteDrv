@@ -3,7 +3,6 @@ COMPONENTS_SRC_PATH = "../../../components"
 
 config("components_config") {
   include_dirs = [
-      "$COMPONENTS_SRC_PATH/softtimer",
       "$COMPONENTS_SRC_PATH/RTTViewer/RTT",
       "$COMPONENTS_SRC_PATH/RTTViewer/Config",
       "$COMPONENTS_SRC_PATH/cmd/ubootcmd",
@@ -27,9 +26,6 @@ config("components_config") {
 #配置一个编译.o集合的目标，与static_library的区别是该目标为虚拟打包，速度更快
 source_set("source_components") {
   sources = [
-    #base
-    "$COMPONENTS_SRC_PATH/softtimer\softtimer.c",
-    "$COMPONENTS_SRC_PATH/softtimer\lstimer.c", 
     #RTOS
     "$COMPONENTS_SRC_PATH/FreeRTOS\Source\portable\MemMang\heap_4.c",
     #RTT

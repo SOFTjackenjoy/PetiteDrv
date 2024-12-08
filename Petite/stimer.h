@@ -20,4 +20,5 @@
 extern void Delay(uint32_t nCount);
 extern uint32_t Stime_get_localtime(void);
 uint32_t Stime_get_systime(void);
+uint32_t stime_get_passtime(uint32_t StrTime);
 #endif

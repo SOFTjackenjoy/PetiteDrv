@@ -31,8 +31,6 @@ lvgl
 	UI
 lwip
 	网络库
-lwrb
-	环形缓冲区
 Petitefont
 	我们整理的字库组件，接口参考lvgl
 spiffs

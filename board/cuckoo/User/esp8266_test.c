@@ -16,6 +16,7 @@ void esp8266_io_init(void)
 {
 	GPIO_InitTypeDef GPIO_InitStructure;
 
+	/* 全部配置为输入，就不会影响模块工作了*/
 
 	GPIO_InitStructure.Pin = GPIO_PIN_9 | GPIO_PIN_10 | GPIO_PIN_13;
 	GPIO_InitStructure.Pull = GPIO_NOPULL;

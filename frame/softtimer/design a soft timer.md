@@ -8,7 +8,7 @@ https://blog.csdn.net/wenbodong/article/details/110223168
 数据结构
 数组：固定
 链表：动态
-堆：接触少。如果要用堆，可以参考libev。
+堆：参考libev。
 
                启动定时器         停止定时器(删除链表节点)           轮询定时器
 数组         O(n) 从数组找空闲点     O(1)               

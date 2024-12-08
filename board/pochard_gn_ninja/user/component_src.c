@@ -72,7 +72,7 @@
 //#include "../../components/emenu/emenu_test.c"
 
 /**-------------------qfsm-----------------------*/
-#include "../../components/qfsm/qfsm.c"
+#include "../../frame/qfsm/qfsm.c"
 /**-------------------free rtos------------------------*/
 #include "..\freertos_port\port.c"
 //#include "..\..\components\FreeRTOS\Source\portable\MemMang\heap_4.c"

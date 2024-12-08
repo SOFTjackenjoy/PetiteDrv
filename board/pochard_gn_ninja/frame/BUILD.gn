@@ -1,0 +1,31 @@
+
+FRAME_SRC_PATH = "../../../frame"
+
+config("frame_config") {
+  include_dirs = [
+      "$FRAME_SRC_PATH/softtimer",
+      "$FRAME_SRC_PATH/qfsm",
+      "$FRAME_SRC_PATH/",
+
+      "../../../components/FreeRTOS\Source\include",
+      "../../../components/FreeRTOS\Source\CMSIS_RTOS_V2",
+      "../user/lvgl_porting",
+      "../user/freertos_port",
+  ]
+}
+ 
+#配置一个编译.o集合的目标，与static_library的区别是该目标为虚拟打包，速度更快
+source_set("source_frame") {
+  sources = [
+    #base
+    "$FRAME_SRC_PATH/softtimer/softtimer_test.c",
+    "$FRAME_SRC_PATH/softtimer/lstimer.c", 
+
+  ]
+  configs = [ 
+      "//build/mcuconfig:stm32f407vgt6_conf",
+      "//MCU:stm32f407_config",
+  ]
+  #配置默认包含config，即所有依赖于该lib的目标均会继承该config
+  all_dependent_configs = [ ":frame_config" ]
+}

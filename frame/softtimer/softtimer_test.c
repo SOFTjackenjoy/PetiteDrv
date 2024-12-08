@@ -1,3 +1,13 @@
+/**
+ * @file    softtimer_test.c
+ * @brief   软定时器测试程序
+ * 
+ * @author  pochard(email@xxx.com)
+ * @version 0.1
+ * @date    2024-12-08
+ * @copyright Copyright (c) 2024..
+ */
+
 #include "stdlib.h"
 #include <stdio.h>
 #include "log.h"
@@ -5,10 +15,6 @@
 #include "stimer.h"
 
 #include "softtimer.h"
-
-/*
-    软定时器测试程序
-*/
 
 /*
         请考虑：

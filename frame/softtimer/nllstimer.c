@@ -1,30 +1,23 @@
 /**
- * @file    lstimer.c
- * @brief   无序单向链表软定时器
+ * @file    nllstimer.c
+ * @brief   无锁单向链表定时器
  * 
  * @author  pochard(email@xxx.com)
  * @version 0.1
- * @date    2024-05-25
+ * @date    2024-12-06
  * @copyright Copyright (c) 2024..
  */
-#include <stdio.h>
-#include <string.h>
 
+#include "stdlib.h"
 #include "log.h"
 #include "mem/p_malloc.h"
 #include "stimer.h"
 #include "cmsis_os.h"
 #include "softtimer.h"
 
-/*
-    无锁单向链表
-*/
+
 struct NllsTimer_s;
-/**
- * @brief   定时器节点
- * 
- * 
- */
+
 typedef struct NllsTimer_s{
     /*creat */
     char name[16];
@@ -39,11 +32,7 @@ typedef struct NllsTimer_s{
     /* pri */
     struct NllsTimer_s *next;        
 }NllsTimer_t;
-/**
- * @brief   定时器LOOP
- * 
- * 
- */
+
 typedef struct NllsTimerLoop_s{
     char name[16];
 
@@ -54,7 +43,12 @@ typedef struct NllsTimerLoop_s{
 
 }NllsTimerLoop_t;
 
-#if 0
+/**
+ * @brief   本模块不加锁
+ * 
+ * @param   slstloop_P  参数描述
+ * 
+ */
 static void slst_list_lock(NllsTimerLoop_t *slstloop_P)
 {
 
@@ -64,7 +58,6 @@ static void slst_list_unlock(NllsTimerLoop_t *slstloop_P)
 {
     
 }
-#endif
 /*-----------------------------------------------*/
 void nllstimer_show_list(NllsTimer_t *ptimer, SOFTTIMER_V now)
 {
@@ -87,8 +80,9 @@ void slst_heart_beat(void *userdata)
 {
     //printf("soft timer heartbeat\r\n");
 }
+
 /**
- * @brief   创建一个定时器LOOP
+ * @brief   创建一个软定时器loop
  * 
  * @return  void* 
  * 
@@ -119,12 +113,13 @@ void *slst_create_loop(void)
     return loop;
 
 }
+
 /**
- * @brief   创建定时器
+ * @brief   创建一个软定时器
  * 
- * @param   name        定时器名字
- * @param   cb          定时器回调函数
- * @return  void* 
+ * @param   name        名字
+ * @param   cb          回调
+ * @return  void*       定时器
  * 
  */
 void *slst_create(char *name, softtimer_cb_t cb)
@@ -144,13 +139,13 @@ void *slst_create(char *name, softtimer_cb_t cb)
 
 }
 /**
- * @brief   启动定时器
+ * @brief   启动一个定时器
  * 
- * @param   loop        添加定时器到此loop
- * @param   timer       定时器指针
+ * @param   loop        定时器挂载的loop
+ * @param   timer       定时器
  * @param   timeout_us  定时
- * @param   userdata    回调函数入参userdata
- * @param   type        SOFTTIMER_TYPE_ONCE 单次；SOFTTIMER_TYPE_PERIODIC 周期；
+ * @param   userdata    用户数据，带入到回调 @ref softtimer_cb_t
+ * @param   type        定时器类型  @ref SoftTimerType_e           
  * @return  int 
  * 
  */
@@ -204,59 +199,37 @@ int slst_start(void *loop, void *timer, SOFTTIMER_V timeout_us, void *userdata, 
     } else {
         //LogSoftTimerD("in list\r\n");
     }
-    /** 发送信号量，立刻唤醒一次loop */
     osSemaphoreRelease(ploop->Sem);
 
     //LogSoftTimerFunOut
     
     return 0;
 }
-/**
- * @brief   停止定时器
- * 
- * @param   loop        参数描述
- * @param   timer       参数描述
- * @return  int 
- * 
- */
+
 int slst_stop(void *loop, void *timer)
 {    
-    //LogSoftTimerFunIn
+    LogSoftTimerFunIn
     
     NllsTimer_t *ptimer = timer; 
     ptimer->type = SOFTTIMER_TYPE_STOP;
 
-    //LogSoftTimerFunOut
+    LogSoftTimerFunOut
     
-    return 0;  
+    return;  
 }
-/**
- * @brief   删除定时器
- * 
- * @param   loop        参数描述
- * @param   timer       参数描述
- * @return  int 
- * 
- */
+
 int slst_delete(void *loop, void *timer)
 {    
-    //LogSoftTimerFunIn
+    LogSoftTimerFunIn
     
     NllsTimer_t *ptimer = timer; 
     ptimer->type = SOFTTIMER_TYPE_STOP;
 
-    //LogSoftTimerFunOut
+    LogSoftTimerFunOut
 
-    return 0;
+    return;
 }
 
-/**
- * @brief   轮询定时器
- * 
- * @param   loop        参数描述
- * @return  int 
- * 
- */
 int slst_loop(void *loop)
 {
     NllsTimerLoop_t *ploop = loop;
@@ -281,9 +254,9 @@ int slst_loop(void *loop)
         switch(ptimer->type) {
             case SOFTTIMER_TYPE_ONCE:
             case SOFTTIMER_TYPE_PERIODIC:
-                /* 必须每次都获取系统时间，以便避免：
-                    定时器1到，回调中 重新start 定时器2,
-                    接着LOOP定时器2，base 大于 systime， 
+                /* 必须每次都获取系统时间，以便避免
+                    定时器1到，回调重新start 定时器2,
+                    LOOP定时器2，base 大于 systime， 
                     算出来的pasttime就很大了，
                     因此定时器2立刻就执行， 不符合逻辑*/
                 systime = Stime_get_systime();
@@ -303,7 +276,7 @@ int slst_loop(void *loop)
                     可以避免类似问题。
                     */
                 if(pasttime  >= ptimer->debtime) {
-                    /* 必须先配置stop，以为在回调中用户可能重新start */
+                    /* 必须先配置stop，这样，在回调中再start此定时器才有效 */
                     if (ptimer->type == SOFTTIMER_TYPE_ONCE){
                         ptimer->type = SOFTTIMER_TYPE_STOP;
                     }
@@ -324,7 +297,6 @@ int slst_loop(void *loop)
                     memset(ptimer, 0, sizeof(NllsTimer_t));
 
                     p_m_free(ptimer);
-                    ptimer = ltimer;
                 }
                 break;
 
@@ -337,7 +309,6 @@ int slst_loop(void *loop)
                 break;
         }
         
-        ltimer = ptimer;
         ptimer = ptimer->next;
     }
 
@@ -346,7 +317,6 @@ int slst_loop(void *loop)
     if (osOK == ret) {
         //printf("sem\r\n");    
     }
-
     SOFTTIMER_V sleeptime = SLST_MAX;
     ptimer = &(ploop->root);
     while(1) {

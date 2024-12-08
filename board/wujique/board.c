@@ -131,7 +131,7 @@ s32 bsp_exuart_wifi_write(u8 *buf, s32 len)
 #include "lvgl_porting/lv_port_disp.h"
 #include "demos/benchmark/lv_demo_benchmark.h"
 #include "panel/soundplay.h"
-#include "components/softtimer/softtimer.h"
+#include "frame/softtimer/softtimer.h"
 
 DevLcdNode *lvgllcd;
 

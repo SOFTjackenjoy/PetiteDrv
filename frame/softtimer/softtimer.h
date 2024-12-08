@@ -22,11 +22,14 @@ typedef void (*softtimer_cb_t)(void *userdata);
 typedef unsigned short int SOFTTIMER_V; //uint16
 //typedef unsigned char SOFTTIMER_V;  //uint8
 
+/**
+ * @brief   定时器类型
+ */
 typedef enum{
     SOFTTIMER_TYPE_NO_LOOP = 0,
-    SOFTTIMER_TYPE_ONCE,
-    SOFTTIMER_TYPE_PERIODIC,
-
+    SOFTTIMER_TYPE_ONCE,            //一次
+    SOFTTIMER_TYPE_PERIODIC,        //周期
+    /**  内部定义 */
     SOFTTIMER_TYPE_STOP = 0x50,
     SOFTTIMER_TYPE_DELETE,
 

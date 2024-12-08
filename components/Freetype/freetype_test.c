@@ -177,9 +177,9 @@ int WIN_GetWordData(u8 type, unsigned char *buff, int word, int buff_size)
 		
 		Uprintf("FT_Load_Char!\r\n");
 		/* 输入的字符是unicode编码：韦 0x97e6 */
-		time = Stime_get_localtime();
+		time = Stime_get_systime();
 		FT_Load_Char (g_ft_face, 0x97e6, FT_LOAD_RENDER|FT_LOAD_MONOCHROME);
-		time2 = Stime_get_localtime();
+		time2 = Stime_get_systime();
 		/* 测试转换时间 */
 		Uprintf("FT_Load_Char time:%d!\r\n", time2-time);
 		uart_printf( "bitmap.rows=%d\r\n" , slot->bitmap.rows);
@@ -221,9 +221,9 @@ int freetype_getdata(uint16_t pixw, int16_t pixh, struct _strBitmapHeadT* head, 
 		FT_Set_Pixel_Sizes(g_ft_face, pixw, pixh);
 		
 		Uprintf("FT_Load_Char!\r\n");
-		time = Stime_get_localtime();
+		time = Stime_get_systime();
 		FT_Load_Char (g_ft_face, unicode, FT_LOAD_RENDER|FT_LOAD_MONOCHROME);
-		time2 = Stime_get_localtime();
+		time2 = Stime_get_systime();
 		/* 测试转换时间 */
 		Uprintf("FT_Load_Char time:%d!\r\n", time2-time);
 		uart_printf( "bitmap.rows=%d\r\n" , slot->bitmap.rows);
